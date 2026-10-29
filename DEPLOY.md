@@ -222,6 +222,7 @@ npx wrangler deploy
 | 首页介绍卡片 | `public/index.html` 里 `#about` 区块（标题、链接、说明文案） |
 | 页脚 | `public/index.html` 底部 `.fcard`（标题、三个链接按钮、版权行） |
 | 主题色 | `public/style.css` 顶部 `:root` 的 `--pink / --purple / --sky / --mint` 等变量，暗色在 `html[data-theme="dark"]` |
+| 404 页 | `public/404.html`（自包含单文件，配色写在它自己的 `:root` 里）。不想用就删掉文件，同时去掉 `wrangler.toml` 的 `not_found_handling` |
 | 文件夹图标归类 | `public/app.js` 的 `FOLDER_CATS`（按名称正则匹配） |
 | 目录缓存时长 | `src/index.js` `DIR_CACHE_TTL`（默认 90 秒） |
 | 搜索范围上限 | `src/index.js` `SEARCH_MAX_DIRS`（60 个目录）、`SEARCH_BUDGET_MS`（7000 毫秒）、`SEARCH_CACHE_TTL`（300 秒） |

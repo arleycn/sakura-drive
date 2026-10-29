@@ -46,6 +46,7 @@ sakura-drive/
 │   ├── index.html
 │   ├── app.js          路由 / 渲染 / 排序 / 搜索 / 口令
 │   ├── style.css       樱色主题（CSS 变量，日夜双色）
+│   ├── 404.html        404 页（not_found_handling = "404-page"）
 │   ├── _headers        安全响应头 + 缓存策略
 │   └── robots.txt
 ├── wrangler.toml       Worker 配置 + KV 绑定 + Cron 触发

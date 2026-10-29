@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>页面不存在 · Sakura Drive</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ff6fa5" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E🌸%3C/text%3E%3C/svg%3E"
+    />
+    <script>
+      (function () {
+        var t = null;
+        try {
+          t = localStorage.getItem("sakura-theme");
+        } catch (e) {}
+        if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+    <style>
+      :root {
+        --pink: #ff6fa5;
+        --deep-pink: #f0447f;
+        --purple: #a06ee8;
+        --sky: #6fc3ff;
+        --text: #4a3b52;
+        --muted: #91809c;
+        --card: #ffffff;
+        --line: rgba(240, 68, 127, 0.16);
+        --grad-main: linear-gradient(120deg, #ff6fa5, #a06ee8 55%, #6fc3ff);
+        --shadow-2: 0 12px 28px rgba(160, 110, 232, 0.16);
+        --font-disp: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI",
+          "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", "Segoe UI",
+          system-ui, sans-serif;
+        --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+      }
+      html[data-theme="dark"] {
+        --text: #f3e9f7;
+        --muted: #b6a6c6;
+        --card: #322545;
+        --line: rgba(255, 140, 190, 0.16);
+        --shadow-2: 0 12px 28px rgba(0, 0, 0, 0.42);
+        color-scheme: dark;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 18px;
+        font-family: var(--font-disp);
+        color: var(--text);
+        background: #fdf7fb;
+        -webkit-font-smoothing: antialiased;
+      }
+      html[data-theme="dark"] body {
+        background: #221a2e;
+      }
+      .wrap {
+        width: 100%;
+        max-width: 460px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        box-shadow: var(--shadow-2);
+        padding: 40px 28px 32px;
+        text-align: center;
+      }
+      .code {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: clamp(64px, 19vw, 104px);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: 0.04em;
+        background: var(--grad-main);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        user-select: none;
+      }
+      h1 {
+        margin-top: 18px;
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+      p {
+        margin-top: 10px;
+        font-size: 13.5px;
+        line-height: 1.75;
+        color: var(--muted);
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 26px;
+        height: 42px;
+        padding: 0 26px;
+        border-radius: 999px;
+        background: var(--grad-main);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 6px 18px rgba(240, 68, 127, 0.28);
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 22px rgba(240, 68, 127, 0.34);
+      }
+      .btn:active {
+        transform: translateY(0);
+      }
+      .foot {
+        margin-top: 24px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        opacity: 0.72;
+      }
+      @media (max-width: 380px) {
+        .wrap {
+          padding: 32px 20px 26px;
+        }
+        p {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <div class="code">404</div>
+      <h1>这个页面不存在</h1>
+      <p>路径可能敲错了，或者文件已经被移动、删除。<br />回首页重新找吧。</p>
+      <a class="btn" href="/">🌸 返回云盘首页</a>
+      <div class="foot">SAKURA DRIVE</div>
+    </main>
+  </body>
+</html>
