@@ -1,0 +1,21 @@
+{
+  "name": "sakura-drive",
+  "version": "0.1.0",
+  "private": true,
+  "description": "基于 Cloudflare Worker + Teambition 项目文件的只读在线云盘",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arleycn/sakura-drive.git"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.154.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

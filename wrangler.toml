@@ -1,0 +1,14 @@
+name = "sakura-drive"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+[assets]
+directory = "public"
+binding = "ASSETS"
+
+[[kv_namespaces]]
+binding = "TB_KV"
+id = "<替换为 wrangler kv namespace create 输出的 id>"
+
+[triggers]
+crons = ["*/30 * * * *"]

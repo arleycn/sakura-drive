@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Sakura Drive</title>
+    <meta name="description" content="基于 Cloudflare Worker 与 Teambition 项目文件的只读在线云盘，支持目录浏览、全盘搜索与在线下载。" />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ff6fa5" />
+    <link rel="canonical" href="https://example.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sakura Drive" />
+    <meta property="og:title" content="Sakura Drive" />
+    <meta property="og:description" content="基于 Cloudflare Worker 与 Teambition 项目文件的只读在线云盘。" />
+    <meta property="og:url" content="https://example.com/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Sakura Drive" />
+    <meta name="twitter:description" content="基于 Cloudflare Worker 与 Teambition 项目文件的只读在线云盘。" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E🌸%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="preload" href="/style.css" as="style" />
+    <link rel="stylesheet" href="/style.css" />
+    <script>
+      (function () {
+        var s = localStorage.getItem("sakura-theme");
+        var d = document.documentElement;
+        if (s) d.dataset.theme = s;
+        else if (matchMedia("(prefers-color-scheme:dark)").matches) d.dataset.theme = "dark";
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="loader" role="status" aria-label="加载中">
+      <span class="sakura-spin">🌸</span>
+      <div class="ld-txt">Sakura Drive 正在加载中…</div>
+      <div class="ld-bar"><i></i></div>
+    </div>
+
+    <div class="sky"></div>
+    <div class="stars"></div>
+    <canvas id="petal-canvas" aria-hidden="true"></canvas>
+
+    <nav class="topnav">
+      <a class="logo" href="#/" aria-label="返回根目录"><span class="saku">🌸</span>Sakura Drive</a>
+      <div class="nav-right">
+        <button class="nav-btn" id="btn-refresh" title="刷新当前目录" aria-label="刷新">↻</button>
+        <button class="nav-btn" id="btn-theme" title="切换日夜" aria-label="切换日夜主题">🌙</button>
+      </div>
+    </nav>
+
+    <div class="shell">
+      <div class="pagehead">
+        <div class="pagehead-text">
+          <h1 id="dir-title">Sakura Drive</h1>
+          <p class="page-sub" id="dir-sub">正在读取云端目录…</p>
+        </div>
+      </div>
+
+      <div class="pathbar" id="pathbar">
+        <nav class="crumbs" id="breadcrumb" aria-label="路径导航"></nav>
+        <div class="path-tools">
+          <button class="tool-btn" id="btn-search" type="button" title="搜索（/）" aria-label="搜索">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="9" cy="9" r="5.4" />
+              <path d="M13.2 13.2 17 17" />
+            </svg>
+          </button>
+          <button class="tool-btn sort-btn" id="btn-sort" type="button" title="排序">名称↑</button>
+          <div class="view-switch" id="view-switch" role="group" aria-label="视图切换">
+            <button data-view="detail" title="详细视图" aria-label="详细视图">
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <rect x="2.5" y="3" width="15" height="14" rx="2.2" />
+                <rect x="5.5" y="6.5" width="9" height="1.6" rx="0.8" />
+                <rect x="5.5" y="10" width="9" height="1.6" rx="0.8" />
+                <rect x="5.5" y="13.5" width="5.5" height="1.6" rx="0.8" />
+              </svg>
+            </button>
+            <button data-view="grid" title="网格视图" aria-label="网格视图">
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <rect x="2.5" y="2.5" width="6" height="6" rx="1.6" />
+                <rect x="11.5" y="2.5" width="6" height="6" rx="1.6" />
+                <rect x="2.5" y="11.5" width="6" height="6" rx="1.6" />
+                <rect x="11.5" y="11.5" width="6" height="6" rx="1.6" />
+              </svg>
+            </button>
+          </div>
+          <div class="menu" id="sort-menu" hidden>
+            <button type="button" data-by="name">名称</button>
+            <button type="button" data-by="time">修改时间</button>
+            <button type="button" data-by="size">大小</button>
+            <div class="menu-sep"></div>
+            <button type="button" data-dir="1">升序 ↑</button>
+            <button type="button" data-dir="-1">降序 ↓</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="searchbar" id="searchbar" hidden>
+        <span class="sb-ic">🔍</span>
+        <input
+          id="search-input"
+          type="search"
+          placeholder="搜索文件名…"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="搜索"
+        />
+        <span class="sb-hint" id="search-hint">当前目录过滤 · 回车搜索全盘</span>
+        <button class="sb-close" id="btn-search-close" type="button" aria-label="关闭搜索">✕</button>
+      </div>
+
+      <main>
+        <div id="skeleton" class="skeleton" hidden>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div id="error" class="error-card" hidden>
+          <div class="err-ic">🥀</div>
+          <h2 id="err-title">加载失败</h2>
+          <p id="err-msg"></p>
+          <button class="err-btn" id="btn-retry">重试</button>
+        </div>
+        <div id="listing" hidden></div>
+
+        <section id="about" class="about" hidden>
+          <h1>Sakura Drive</h1>
+          <h3>About</h3>
+          <p class="about-links">
+            <a href="https://github.com/arleycn/sakura-drive" target="_blank" rel="noopener">GitHub</a>
+            <span>·</span>
+            <a href="https://github.com/arleycn/sakura-drive/blob/main/DEPLOY.md" target="_blank" rel="noopener">部署文档</a>
+          </p>
+          <p class="about-hi">
+            一个挂载 Teambition 项目文件的只读在线云盘，<br />
+            跑在 Cloudflare Worker + KV 上，前端零依赖、无构建。<br />
+            想部署自己的，看仓库里的 DEPLOY.md。
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <footer>
+      <div class="fcard">
+        <div class="f-big">🌸 Sakura Drive</div>
+        <div class="f-links">
+          <a href="https://github.com/arleycn/sakura-drive" target="_blank" rel="noopener">🐙 GitHub</a>
+          <a href="https://github.com/arleycn/sakura-drive/blob/main/DEPLOY.md" target="_blank" rel="noopener">📖 部署文档</a>
+          <a href="https://github.com/arleycn/sakura-drive/blob/main/LICENSE" target="_blank" rel="noopener">📄 MIT</a>
+        </div>
+        <div class="f-copy">
+          <span>© 2026 Sakura Drive ❤ Storage By Teambition</span>
+          <span class="f-sep">·</span>
+          <span>Hosted on Cloudflare</span>
+          <span class="f-sep">|</span>
+          <span class="f-status"><i id="kv-dot"></i><span id="kv-status">Cookie 检测中…</span><span class="badge" id="badge-cache" hidden></span></span>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>
