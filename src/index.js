@@ -80,7 +80,7 @@ async function getProject(env, cookie, projectId) {
     id: d._id || projectId,
     name: d.name || "",
     rootId: d._rootCollectionId || "",
-    updated: d.updatedAt || null,
+    updated: d.updated || null,
   };
   if (info.rootId) await kvPut(env, cacheKey, JSON.stringify(info), PROJECT_TTL);
   return info;
@@ -114,7 +114,7 @@ function listed(name) {
 }
 
 function normalizeFolder(d) {
-  return { id: d._id, name: d.title, updated: d.updatedAt || d.createdAt || null };
+  return { id: d._id, name: d.title, updated: d.updated || d.created || null };
 }
 
 function normalizeFile(f) {
@@ -125,7 +125,7 @@ function normalizeFile(f) {
     size: f.fileSize || 0,
     type: f.fileType || "",
     ext: (f.ext || extOf(name)).toLowerCase(),
-    updated: f.updatedAt || f.createdAt || null,
+    updated: f.updated || f.lastVersionTime || f.created || null,
   };
 }
 
@@ -368,7 +368,7 @@ async function handleApi(request, env, parts) {
         size: d.fileSize,
         type: d.fileType,
         ext: (d.ext || extOf(name)).toLowerCase(),
-        updated: d.updatedAt || d.createdAt || null,
+        updated: d.updated || d.lastVersionTime || d.created || null,
       });
     }
 
