@@ -9,6 +9,7 @@ const PASS_CACHE_TTL = 900;
 const SEARCH_CACHE_TTL = 300;
 const SEARCH_MAX_DIRS = 60;
 const SEARCH_BUDGET_MS = 7000;
+const THUMB_TTL = 86400;
 
 const LOCK_FILE = ".password";
 
@@ -379,6 +380,26 @@ async function handleApi(request, env, parts) {
       return proxyBinary(d.downloadUrl, request, {
         "content-disposition": disposition(nameOf(d)),
         "cache-control": "no-store",
+      });
+    }
+
+    if (action === "thumb") {
+      const id = decodeURIComponent(parts[2]);
+      if (!id) return json({ error: "missing_id" }, 400);
+      const tkey = "thumb:" + id;
+      let thumb = await kvGet(env, tkey);
+      if (!thumb) {
+        const { status, data: d } = await getWork(env, cookie, id);
+        if (!d) return json({ error: "fetch_failed", status }, status);
+        thumb = (d.thumbnailUrl || d.thumbnail || "").trim();
+        await kvPut(env, tkey, thumb || "-", THUMB_TTL);
+      }
+      if (!thumb || thumb === "-") {
+        return json({ error: "no_thumbnail", message: "该文件无缩略图（可能非图片）" }, 404);
+      }
+      return proxyBinary(thumb, request, {
+        "content-disposition": "inline",
+        "cache-control": "public, max-age=86400, immutable",
       });
     }
 
