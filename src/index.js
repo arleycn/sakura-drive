@@ -266,7 +266,7 @@ async function proxyBinary(url, request, extraHeaders) {
 
 function disposition(name) {
   const fallback = String(name || "file").replace(/[^\x20-\x7e]/g, "_").replace(/"/g, "");
-  return `inline; filename="${fallback}"; filename*=UTF-8''${encodeURIComponent(name || "file")}`;
+  return `attachment; filename="${fallback}"; filename*=UTF-8''${encodeURIComponent(name || "file")}`;
 }
 
 async function keepAlive(env) {
