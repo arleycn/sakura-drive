@@ -9,7 +9,7 @@ not_found_handling = "404-page"
 
 [[kv_namespaces]]
 binding = "TB_KV"
-id = "<替换为 wrangler kv namespace create 输出的 id>"
+id = "301f730c9efc44749e3eca46b1126ec3"
 
 [triggers]
 crons = ["*/30 * * * *"]
